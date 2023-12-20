@@ -13,15 +13,30 @@ export const PersonForm = ({ notifyError }) => {
 
     // Es LAZY, nosotros le decimos cuando utilizarlo
     // en este caso es un metodo para que nosotros hagamos la mutacion
-    const [ createPerson ] = useMutation(CREATE_PERSON,{ refetchQueries: [{
-        query: ALL_PERSONS// Hacemos REFETCH (pedir los datos nuevamente) de esa QUERY que es ALL_PERSONS
-        // Esto pasara solo cuando hagamos la mutacion
-             }],
+    const [ createPerson ] = useMutation(CREATE_PERSON,{ 
+        
         onError: (error) => {
            notifyError(error.graphQLErrors[0].message) // Tomamos el primer mansaje de ERROR
+        },
+        // Esto evitará el "reFecth" (que puede ser una opcion valida ocasionalmente)
+        // La "store" es donde tenemos la CHACHE
+        // La "response" es la respuesta de la mutacion
+        update: (store, response) => {
+            const dataInStore = store.readQuery({ query: ALL_PERSONS })
+            // "EScribimos" en la QUERY ALL_PERSONS
+            store.writeQuery({
+                query: ALL_PERSONS,
+                data: {
+                    ...dataInStore,// Esta la informacion q ya tenia
+                    allPersons: [ 
+                        ...dataInStore.allPersons, // Lo que ya tenia
+                        response.data.addPerson // Añadimos la mutacion
+                    ]
+                }
+            })
         }
 
-})
+         })
 
     const handleSubmit = (e) => {
         e.preventDefault()

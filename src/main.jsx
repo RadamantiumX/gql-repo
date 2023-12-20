@@ -3,11 +3,20 @@ import App from './App.jsx'
 import './index.css'
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 
+// Obtenemos el TOKEN de AUTENTICACION
+const getAuth = () => {
+  const token = localStorage.getItem('phonenumbers-user-token')
+  return token ? `bearer ${token}` : null
+}
+
 // Iniciamos el cliente de APOLLO CLIENT
 const client = new ApolloClient({
   connectToDevTools: true, // Conectar con las herramientas del desarrollador en el navegador
   cache: new InMemoryCache(), // Es una CACHE muy tipica
   link: new HttpLink({
+    headers:{
+      authorization: getAuth()
+    },
     // Likeamos el recurso de GRAPHQL
     uri: 'http://localhost:4000'
   })

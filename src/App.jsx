@@ -7,18 +7,28 @@ import { Notify } from './components/Notify'
 import { usePersons } from './persons/customs-hooks'
 import { useState } from 'react'
 import { PhoneForm } from './components/PhoneForm'
-
+import { LoginForm } from './components/LoginForm'
+import { useApolloClient } from '@apollo/client'
 
 
 function App() {
   const { data, loading, error } = usePersons()
   const [errorMessage, setErrorMessage] = useState(null)
-  
+  const [token, setToken] = useState(localStorage.getItem('phonenumbers-user-token'))
+  const client = useApolloClient() // Utilizamos el CUSTOM HOOK de APOLLO CLIENT
+
+
   if (error) return (<span style='color: red'>{error}</span>)
 
   const notifyError = message => {
     setErrorMessage(message)
     setTimeout(()=>setErrorMessage(null), 5000)
+  }
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear() // Limpiamos el localStorage del navegador
+    client.resetStore() // Reseteamos la store del cliente APOLLO, para limpiar el CACHE
   }
   
   return (
@@ -38,6 +48,10 @@ function App() {
           <Persons persons={data?.allPersons}/> {/* Si "persons" es igual a "null" retorna "null" */}
           </>
         )
+        }
+        {/* Si tenemos TOKEN, mostramos el boton de LOGOUT, si no, mostramos el formulario de LOGIN */}
+        {token ? <button onClick={logout}>Logout</button> :
+        <LoginForm notifyError={notifyError} setToken={setToken}/>
         }
         <PhoneForm notifyError={notifyError}/>
         <PersonForm notifyError={notifyError}/>
