@@ -19,3 +19,15 @@ Al realizar una mutación, el cliente mira en la CACHE (utilizando la ID en este
 Es necesario el campo de la ID para sincronizar los cambios, juntos con ls otros datos que queremos cambiar.
 
 Con esto podemos conseguir una especie de ESTADO GLOBAL (tal como seria REDUX), pero con algunas carencias.
+
+## IMPORTANTE
+
+Es recomandable el uso de CUSTOMS HOOK para realizar cambios en el estado, sobre todo si utilizamos APOLLO CLIENT, es buena practica separar la logica de los estados de este cliente en ficheros distintos a los del cliente REACT.
+
+## FRAGMENTS
+
+Con el uso de los FRAGMENTS podemos ahorrarnos el mantenimiento del codigo al repetir siempre las mismas propiedades. Ese fragmento lo podemos importar a traves del codigo del cliente para poder reutilizalo cuantas veces queramos.
+
+## SUBSCRIPTIONS
+
+En este caso utilizaremos WEBSOCKETS, que quedaran en modo WATCH ante un evento, que seria una suscripcion, ocurrira algo y se mantendra anteto a ello. Para ello tenemos q hacer modificacion en el SERVER DE GQL.
